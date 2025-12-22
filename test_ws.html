@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <h2>WebSocket тест</h2>
+    <button onclick="connect()">Подключиться</button>
+    <button onclick="sendTest()">Отправить тест</button>
+    <div id="output"></div>
+    <script>
+        let ws;
+        function connect() {
+            ws = new WebSocket('ws://localhost:8000/ws/vacancies');
+            ws.onopen = () => log('Подключено');
+            ws.onmessage = (e) => log(': ' + e.data);
+            ws.onerror = (e) => log('Ошибка: ' + e);
+            ws.onclose = () => log('Отключено');
+        }
+        function sendTest() {
+            if (ws) ws.send('Тестовое сообщение');
+        }
+        function log(msg) {
+            document.getElementById('output').innerHTML += msg + '<br>';
+        }
+    </script>
+</body>
+</html>
