@@ -11,5 +11,6 @@
 8. В терминале, отдельном от того, где был запущен Docker-контейнер с NATS, запуск веб-сервера: uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 9. Проверка работы веб-сервера: curl http://localhost:8000/health
 10. (но пропустить все 5-8 пункты) Запустить NATS и веб-сервер с помощью Docker-compose: docker-compose up -d
-11. Открыть веб-сервер в браузере: http://localhost:8000/docs
-12. Открыть NATS в браузере: http://localhost:8222/
+11. Проверить запущенные контейнеры: docker-compose ps
+12. Открыть веб-сервер в браузере: http://localhost:8000/docs
+13. Открыть NATS в браузере: http://localhost:8222/
