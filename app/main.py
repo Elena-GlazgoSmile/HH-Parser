@@ -54,15 +54,6 @@ async def websocket_endpoint(websocket: WebSocket):
     except WebSocketDisconnect:
         manager.disconnect(websocket)
 
-@app.get("/")
-async def root():
-    return {
-        "message": "HH Parser API",
-        "version": settings.VERSION,
-        "docs": "/docs",
-        "websocket": "/ws/vacancies"
-    }
-
 @app.get("/health")
 async def health_check():
     return {
