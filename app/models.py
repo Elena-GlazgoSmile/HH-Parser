@@ -26,12 +26,3 @@ class Vacancy(Base):
     updated_at = Column(DateTime, default=datetime.utcnow)
     is_active = Column(Boolean, default=True)
 
-class UpdateLog(Base):
-    __tablename__ = "update_logs"
-    
-    id = Column(Integer, primary_key=True, index=True)
-    timestamp = Column(DateTime, default=datetime.utcnow)
-    success = Column(Boolean, default=True)
-    new_vacancies = Column(Integer, default=0)
-    updated_vacancies = Column(Integer, default=0)
-    error_message = Column(String, nullable=True)
