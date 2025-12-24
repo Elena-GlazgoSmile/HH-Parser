@@ -73,11 +73,3 @@ async def run_background_task():
         "task_id": result["task_id"],
         "started_at": datetime.utcnow()
     }
-
-@router.get("/tasks/status")
-async def get_task_status():
-    return {
-        "is_running": background_task.is_running,
-        "task_id": background_task.task_id,
-        "last_run": datetime.utcnow().isoformat() if background_task.task_id else None
-    }
