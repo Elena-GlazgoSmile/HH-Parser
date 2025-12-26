@@ -37,17 +37,6 @@ class BackgroundTask:
                         await crud_vacancy.create(session, parsed_vacancy)
                         new_vacancies += 1
                         
-                        await manager.broadcast({
-                            "type": "new_vacancy",
-                            "data": {
-                                "id": parsed_vacancy.hh_id,
-                                "name": parsed_vacancy.name,
-                                "employer": parsed_vacancy.employer,
-                                "salary_from": parsed_vacancy.salary_from,
-                                "salary_to": parsed_vacancy.salary_to
-                            },
-                            "timestamp": datetime.utcnow().isoformat()
-                        })
                     
                 await session.commit()
             
@@ -78,13 +67,6 @@ class BackgroundTask:
         except Exception as e:
             error_msg = str(e)
             print(f"Ошибка в фоновой задаче: {error_msg}")
-            
-            await manager.broadcast({
-                "type": "task_error",
-                "task_id": self.task_id,
-                "timestamp": datetime.utcnow().isoformat(),
-                "error": error_msg
-            })
             
             return {
                 "status": "error",

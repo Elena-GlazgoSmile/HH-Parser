@@ -5,6 +5,7 @@ from app.api.endpoints import router as api_router
 from app.websocket.ws_manager import manager
 from app.tasks.background import background_task
 from app.services.nats_client import nats_client
+from app.services.nats_to_websocket import bridge
 from app.database import init_db
 from app.config import settings
 from datetime import datetime
@@ -14,8 +15,8 @@ async def lifespan(app: FastAPI):
     print("Инициализация приложения...")
     
     await init_db()
-    
     await nats_client.connect()
+    await bridge.start()
     
     task = asyncio.create_task(background_task.start_periodic())
     
@@ -23,6 +24,7 @@ async def lifespan(app: FastAPI):
     
     print("Остановка приложения...")
     task.cancel()
+    await bridge.stop()
     await nats_client.close()
 
 app = FastAPI(

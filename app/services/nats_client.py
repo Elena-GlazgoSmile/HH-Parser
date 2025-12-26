@@ -1,6 +1,5 @@
 import json
 import nats
-from nats.errors import ConnectionClosedError, TimeoutError
 from app.config import settings
 from datetime import datetime
 
@@ -8,6 +7,7 @@ class NatsClient:
     def __init__(self):
         self.nc = None
         self.connected = False
+        self.message_handler = None
     
     async def connect(self):
         try:
@@ -15,19 +15,12 @@ class NatsClient:
             self.connected = True
             print("Подключен к NATS")
             
-            await self.subscribe()
-            
+            if self.message_handler:
+                await self.nc.subscribe(settings.NATS_SUBJECT, cb=self.message_handler)
+                print(f"   Подписан на: {settings.NATS_SUBJECT}")
+                
         except Exception as e:
             print(f"Ошибка подключения к NATS: {e}")
-    
-    async def subscribe(self):
-        if self.connected and self.nc:
-            async def message_handler(msg):
-                subject = msg.subject
-                data = msg.data.decode()
-                print(f"Получено сообщение из NATS [{subject}]: {data}")
-            
-            await self.nc.subscribe(settings.NATS_SUBJECT, cb=message_handler)
     
     async def publish(self, subject: str, message: dict):
         if not self.connected or not self.nc:
@@ -36,11 +29,8 @@ class NatsClient:
         
         try:
             message['published_at'] = datetime.utcnow().isoformat()
-            await self.nc.publish(
-                subject,
-                json.dumps(message).encode()
-            )
-            print(f"Опубликовано в NATS [{subject}]")
+            await self.nc.publish(subject, json.dumps(message).encode())
+            print(f"Опубликовано в NATS [{subject}]: {message.get('type', 'unknown')}")
         except Exception as e:
             print(f"Ошибка публикации в NATS: {e}")
     
@@ -48,5 +38,6 @@ class NatsClient:
         if self.nc:
             await self.nc.close()
             self.connected = False
+            print("Соединение с NATS закрыто")
 
 nats_client = NatsClient()

@@ -14,13 +14,9 @@ router = APIRouter()
 async def get_items(
     skip: int = Query(0, ge=0),
     limit: int = Query(100, ge=1, le=1000),
-    active_only: bool = Query(True),
     db: AsyncSession = Depends(get_db)
 ):
     items = await crud_vacancy.get_all(db, skip=skip, limit=limit)
-    
-    if active_only:
-        items = [v for v in items if v.is_active]
     
     return items
 
