@@ -15,9 +15,6 @@ class ConnectionManager:
             self.active_connections.remove(websocket)
         print(f"WebSocket отключен. Осталось: {len(self.active_connections)}")
     
-    async def send_personal_message(self, message: dict, websocket: WebSocket):
-        await websocket.send_json(message)
-    
     async def broadcast(self, message: dict):
         disconnected = []
         
